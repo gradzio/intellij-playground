@@ -5,17 +5,16 @@
 
   <!-- Public plugin name should be written in Title Case.
        Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-name -->
-  <name>IntelliJPlugin</name>
+  <name>Lowgular</name>
 
   <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
-  <vendor email="support@yourcompany.com" url="https://www.yourcompany.com">YourCompany</vendor>
+  <vendor email="info@lowgular.io" url="https://www.lowgular.io">Lowgular</vendor>
 
   <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
        Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
        Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
   <description><![CDATA[
-    Enter short description for your plugin here.<br>
-    <em>most HTML tags may be used</em>
+    The playground plugin, alpha version ooonly
   ]]></description>
 
   <!-- Product and plugin compatibility requirements.
@@ -26,11 +25,26 @@
   <!-- Extension points defined by the plugin.
        Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
   <extensions defaultExtensionNs="com.intellij">
-
+    <projectService serviceImplementation="com.lowgular.intellij.LowgularSettings"/>
   </extensions>
   <actions>
-    <action class="com.lowgular.intellij.actions.CreateDTO" id="createDTO" text="CreateDTO">
-      <add-to-group group-id="NewGroup" anchor="last"/>
+    <group
+      id="org.intellij.sdk.action.GroupedActions"
+      text="Lowgular"
+      popup="true"
+      icon="/META-INF/lowgular.png">
+      <add-to-group
+        group-id="NewGroup"
+        anchor="last"/>
+      <action class="com.lowgular.intellij.actions.CreateDTO" id="createDTO" text="Create DTO" icon="/META-INF/lowgular.png">
+      </action>
+      <action class="com.lowgular.intellij.actions.CreateService" id="createService" text="Create Service" icon="/META-INF/lowgular.png">
+      </action>
+      <action class="com.lowgular.intellij.actions.CreateSmartComponent" id="createSmartComponent" text="Create Smart Component" icon="/META-INF/lowgular.png">
+      </action>
+    </group>
+    <action class="com.lowgular.intellij.actions.CreateDtoPort" id="createDtoPort" text="Create DTO Port" icon="/META-INF/lowgular.png">
+      <add-to-group group-id="EditorPopupMenu" anchor="last"/>
     </action>
   </actions>
 </idea-plugin>

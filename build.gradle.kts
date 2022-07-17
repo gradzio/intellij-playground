@@ -6,6 +6,12 @@ plugins {
 
 group = "com.lowgular.intellij.plugin"
 version = "1.0-SNAPSHOT"
+val ktorVersion = "2.0.3"
+
+dependencies {
+  implementation("io.ktor:ktor-client-core:$ktorVersion")
+  implementation("io.ktor:ktor-client-cio:$ktorVersion")
+}
 
 repositories {
     mavenCentral()
@@ -41,6 +47,7 @@ tasks {
         from(sourceSets.named("unpacked").get().allSource) {
             into("")
         }
+      duplicatesStrategy = DuplicatesStrategy.INCLUDE
     }
 
     prepareSandbox {
