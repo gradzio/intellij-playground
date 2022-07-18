@@ -7,27 +7,12 @@ import org.codehaus.jettison.json.JSONObject
 import org.codehaus.jettison.json.JSONTokener
 
 
-fun makeNodeCommand(cliFilePath: String, action: String, params: JSONObject, userId: String): GeneralCommandLine {
+fun makeNodeCommand(cliFilePath: String, action: String, params: JSONObject, userId: String, workspaceRootPath: String): GeneralCommandLine {
   val moduleExe = "node"
   val context = JSONObject()
-    .put("modules", JSONObject()
-      .put("dto", JSONObject()
-        .put("suffix", "DTO")
-        .put("folder", "application/ports/secondary/dto/\$name\$"))
-      .put("dto-port", JSONObject()
-        .put("suffix", "DtoPort")
-        .put("folder", "application/ports/secondary/dto/\$name\$"))
-      .put("dto-service", JSONObject()
-        .put("suffix", "Service")
-        .put("folder", "adapters/secondary/services/\$name\$"))
-      .put("smart-component", JSONObject()
-        .put("suffix", "Component")
-        .put("folder", "adapters/primary/components/\$name\$"))
-    )
     .put("workspace", JSONObject()
-      .put("rootPath", "/home/ortho/Desktop/projects/gradzio/nx-test")
-      .put("tsConfigPath", "tsconfig.base.json")
-      .put("configPath", "angular.json"))
+      .put("rootPath", workspaceRootPath)
+    )
     .put("userContext", JSONObject().put("id", userId))
   val commandLine = GeneralCommandLine(
     moduleExe, cliFilePath, action, params.toString(), context.toString()

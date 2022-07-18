@@ -14,6 +14,8 @@ class CreateDTO : DumbAwareAction() {
       val project = e.project ?: return
       val file = e.getData(PlatformDataKeys.VIRTUAL_FILE) ?: return
       val userId = Auth(project).getUserId()
+      LOG.warn("Project base path ${project.basePath}")
+      LOG.warn("User id: $userId")
       val name = Messages.showInputDialog(
           project, "What is the DTO name?",
           "DTO Name", Messages.getQuestionIcon()

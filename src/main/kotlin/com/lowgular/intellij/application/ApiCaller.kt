@@ -13,7 +13,7 @@ class ApiCaller {
     val application = ApplicationManager.getApplication()
     application.executeOnPooledThread {
       val cliFile = JSLanguageServiceUtil.getPluginDirectory(this::class.java, "cli/main.js")
-      val command = makeNodeCommand(cliFile.toString(), route, payload, userId)
+      val command = makeNodeCommand(cliFile.toString(), route, payload, userId, project.basePath as String)
       val data = grabCommandOutput(command)
       application.invokeLater {
         if (data.getString("status") == "error") {
