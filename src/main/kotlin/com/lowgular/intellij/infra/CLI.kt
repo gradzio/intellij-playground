@@ -5,15 +5,16 @@ import com.intellij.execution.process.CapturingProcessHandler
 import com.intellij.openapi.diagnostic.Attachment
 import org.codehaus.jettison.json.JSONObject
 import org.codehaus.jettison.json.JSONTokener
+import java.util.UUID
 
 
-fun makeNodeCommand(cliFilePath: String, action: String, params: JSONObject, userId: String, workspaceRootPath: String): GeneralCommandLine {
+fun makeNodeCommand(cliFilePath: String, action: String, params: JSONObject, userId: String, workspaceRootPath: String, correlationId: String): GeneralCommandLine {
   val moduleExe = "node"
   val context = JSONObject()
     .put("workspace", JSONObject()
       .put("rootPath", workspaceRootPath)
     )
-    .put("userContext", JSONObject().put("id", userId))
+    .put("userContext", JSONObject().put("id", userId).put("correlationId", correlationId))
   val commandLine = GeneralCommandLine(
     moduleExe, cliFilePath, action, params.toString(), context.toString()
   )

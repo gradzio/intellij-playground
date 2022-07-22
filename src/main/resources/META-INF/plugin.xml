@@ -46,5 +46,8 @@
     <action class="com.lowgular.intellij.actions.CreateDtoPort" id="createDtoPort" text="Create DTO Port" icon="/META-INF/lowgular.png">
       <add-to-group group-id="EditorPopupMenu" anchor="last"/>
     </action>
+    <action class="com.lowgular.intellij.actions.ImplementDtoPort" id="implementDtoPort" text="Implement DTO Port" icon="/META-INF/lowgular.png">
+      <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+    </action>
   </actions>
 </idea-plugin>
