@@ -36,7 +36,7 @@
       <add-to-group
         group-id="NewGroup"
         anchor="last"/>
-      <action class="com.lowgular.intellij.actions.CreateDTO" id="createDTO" text="Create DTO" icon="/META-INF/lowgular.png">
+      <action class="com.lowgular.intellij.actions.CreateDataStructure" id="createDataStructure" text="Create DataStructure" icon="/META-INF/lowgular.png">
       </action>
       <action class="com.lowgular.intellij.actions.CreateService" id="createService" text="Create Service" icon="/META-INF/lowgular.png">
       </action>
@@ -47,6 +47,9 @@
       <add-to-group group-id="EditorPopupMenu" anchor="last"/>
     </action>
     <action class="com.lowgular.intellij.actions.ImplementDtoPort" id="implementDtoPort" text="Implement DTO Port" icon="/META-INF/lowgular.png">
+      <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+    </action>
+    <action class="com.lowgular.intellij.actions.GetData" id="getData" text="Get Data" icon="/META-INF/lowgular.png">
       <add-to-group group-id="EditorPopupMenu" anchor="last"/>
     </action>
   </actions>

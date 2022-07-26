@@ -22,22 +22,21 @@ class ImplementDtoPort : DumbAwareAction() {
       val file = e.getData(PlatformDataKeys.VIRTUAL_FILE) ?: return
       val userId = Auth(project).getUserId()
       val correlationId = UUID.randomUUID().toString()
-      val cliFile = JSLanguageServiceUtil.getPluginDirectory(this::class.java, "cli/main.js")
-      val apiCaller = ApiClient(project, userId, correlationId)
+      val apiClient = ApiClient(project, userId, correlationId)
 
       val application = ApplicationManager.getApplication()
       application.executeOnPooledThread {
         application.invokeLater {
           try {
-            val ports = apiCaller.getDataArray("entities/get", JSONObject().put("clickedPath", file.path).put("entityId", "dto-port"))//grabCommandOutput(getPortsCommand).getJSONArray("data")
+            val ports = apiClient.getDataArray("entities/get", JSONObject().put("clickedPath", file.path).put("entityId", "dto-port"))
             val selectedPortIndex = makeMultiOptionModal("Which dto port to implement?",  "Choose DTO Port", ports)
             val dtoPortFile = ports.getJSONObject(selectedPortIndex).getString("path")
 
-            val dtos = apiCaller.getDataArray("entities/get", JSONObject().put("clickedPath", file.path).put("entityId", "dto"))
+            val dtos = apiClient.getDataArray("entities/get", JSONObject().put("clickedPath", file.path).put("entityId", "dto"))
             val selectedDtoIndex = makeMultiOptionModal( "What is the dto to use as Response Object?", "Choose Response Object", dtos)
             val dtoFile = dtos.getJSONObject(selectedDtoIndex).getString("path")
 
-            val data = apiCaller.getDataObject("service/implement-port", JSONObject().put("serviceFile", file.path).put("dtoPortFile", dtoPortFile).put("responseObjectFile", dtoFile))
+            val data = apiClient.getDataObject("service/implement-port", JSONObject().put("serviceFile", file.path).put("dtoPortFile", dtoPortFile).put("responseObjectFile", dtoFile))
 
             Messages.showMessageDialog(
               project,

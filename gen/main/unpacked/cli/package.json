@@ -1,0 +1,9 @@
+{
+  "name": "lowgular-api-cli",
+  "version": "0.0.0",
+  "main": "main.js",
+  "dependencies": {
+    "ts-morph": "13.0.3",
+    "tslib": "^2.3.0"
+  }
+}
