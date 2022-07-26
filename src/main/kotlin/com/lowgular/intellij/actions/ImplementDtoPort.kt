@@ -29,11 +29,11 @@ class ImplementDtoPort : DumbAwareAction() {
         application.invokeLater {
           try {
             val ports = apiClient.getDataArray("entities/get", JSONObject().put("clickedPath", file.path).put("entityId", "dto-port"))
-            val selectedPortIndex = makeMultiOptionModal("Which dto port to implement?",  "Choose DTO Port", ports)
+            val selectedPortIndex = makeMultiOptionModal("Which dto port to implement?",  "Choose DTO Port", ports, "name")
             val dtoPortFile = ports.getJSONObject(selectedPortIndex).getString("path")
 
             val dtos = apiClient.getDataArray("entities/get", JSONObject().put("clickedPath", file.path).put("entityId", "dto"))
-            val selectedDtoIndex = makeMultiOptionModal( "What is the dto to use as Response Object?", "Choose Response Object", dtos)
+            val selectedDtoIndex = makeMultiOptionModal( "What is the dto to use as Response Object?", "Choose Response Object", dtos, "name")
             val dtoFile = dtos.getJSONObject(selectedDtoIndex).getString("path")
 
             val data = apiClient.getDataObject("service/implement-port", JSONObject().put("serviceFile", file.path).put("dtoPortFile", dtoPortFile).put("responseObjectFile", dtoFile))

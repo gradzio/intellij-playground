@@ -29,7 +29,7 @@ class GetData : DumbAwareAction() {
               "entities/get",
               JSONObject().put("clickedPath", file.path).put("entityId", "dto-port")
             )
-            val selectedPortIndex = makeMultiOptionModal("Which dto port to implement?", "Choose DTO Port", ports)
+            val selectedPortIndex = makeMultiOptionModal("Which dto port to implement?", "Choose DTO Port", ports, "name")
             val dtoPortFile = ports.getJSONObject(selectedPortIndex).getString("path")
 
 

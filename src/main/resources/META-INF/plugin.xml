@@ -38,6 +38,8 @@
         anchor="last"/>
       <action class="com.lowgular.intellij.actions.CreateDataStructure" id="createDataStructure" text="Create DataStructure" icon="/META-INF/lowgular.png">
       </action>
+      <action class="com.lowgular.intellij.actions.CreateObject" id="createObject" text="Create Object" icon="/META-INF/lowgular.png">
+      </action>
       <action class="com.lowgular.intellij.actions.CreateService" id="createService" text="Create Service" icon="/META-INF/lowgular.png">
       </action>
       <action class="com.lowgular.intellij.actions.CreateSmartComponent" id="createSmartComponent" text="Create Smart Component" icon="/META-INF/lowgular.png">

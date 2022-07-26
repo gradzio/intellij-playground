@@ -12,7 +12,7 @@ import com.lowgular.intellij.infra.LOG;
 import com.lowgular.intellij.infra.ui.makeMultiOptionModal
 import java.util.*
 
-class CreateDataStructure : DumbAwareAction() {
+class CreateObject : DumbAwareAction() {
     override fun actionPerformed(e: AnActionEvent) {
       val project = e.project ?: return
       val file = e.getData(PlatformDataKeys.VIRTUAL_FILE) ?: return
@@ -24,28 +24,27 @@ class CreateDataStructure : DumbAwareAction() {
       application.executeOnPooledThread {
         application.invokeLater {
           try {
-            val dataStructures = apiClient.getDataArray(
-              "data-structure/list",
+            val objects = apiClient.getDataArray(
+              "object/list",
               JSONObject(),
             )
-            val selectedDataStructureIndex = makeMultiOptionModal("Which data structure to create?",  "Choose DataStructure", dataStructures, "id")
-            val dataStructure = dataStructures.getJSONObject(selectedDataStructureIndex)
-            val dataStructureId = dataStructure.getString("id")
+            val selectedObjectIndex = makeMultiOptionModal("Which object to create?",  "Choose Object", objects, "id")
+            val objectId = objects.getJSONObject(selectedObjectIndex).getString("id")
 
             val name = Messages.showInputDialog(
-                project, "What is the $dataStructureId name?",
-                "$dataStructureId Name", Messages.getQuestionIcon()
+                project, "What is the $objectId name?",
+                "$objectId Name", Messages.getQuestionIcon()
             )
             if (name === null) {
-              throw Error("$dataStructureId name is required")
+              throw Error("$objectId name is required")
             }
             LOG.warn("Got name: $name")
             val propertiesCsv = Messages.showInputDialog(
-              project, "What are the $dataStructureId properties?",
-              "$dataStructureId Properties", Messages.getQuestionIcon()
+              project, "What are the $objectId properties?",
+              "$objectId Properties", Messages.getQuestionIcon()
             )
             if (propertiesCsv === null) {
-              throw Error("$dataStructureId properties are required")
+              throw Error("$objectId properties are required")
             }
             val props = propertiesCsv.replace("\\s".toRegex(), "").split(",");
             val properties = JSONObject();
@@ -55,8 +54,8 @@ class CreateDataStructure : DumbAwareAction() {
             }
             LOG.warn("Got props: ${properties.toString()}")
             val data = apiClient.getDataObject(
-              "data-structure/create",
-              JSONObject(mapOf("entityId" to dataStructureId, "name" to name, "clickedPath" to file.path, "properties" to properties)),
+              "object/create",
+              JSONObject(mapOf("entityId" to objectId, "name" to name, "clickedPath" to file.path, "properties" to properties)),
             )
             Messages.showMessageDialog(
               project,
