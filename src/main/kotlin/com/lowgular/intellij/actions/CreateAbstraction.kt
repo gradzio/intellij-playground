@@ -12,7 +12,7 @@ import com.lowgular.intellij.infra.LOG;
 import com.lowgular.intellij.infra.ui.makeMultiOptionModal
 import java.util.*
 
-class CreateService : DumbAwareAction() {
+class CreateAbstraction : DumbAwareAction() {
     override fun actionPerformed(e: AnActionEvent) {
       val project = e.project ?: return
       val file = e.getData(PlatformDataKeys.VIRTUAL_FILE) ?: return
@@ -24,33 +24,34 @@ class CreateService : DumbAwareAction() {
       application.executeOnPooledThread {
         application.invokeLater {
           try {
-            val services = apiClient.getDataArray(
-              "service/list",
+            val abstractions = apiClient.getDataArray(
+              "abstraction/list",
               JSONObject(),
             )
-            val selectedServiceIndex = makeMultiOptionModal("Which service to create?",  "Choose Service", services, "id")
-            val service = services.getJSONObject(selectedServiceIndex)
-            val serviceId = service.getString("id")
+            val selectedIndex = makeMultiOptionModal("Which abstraction to create?",  "Choose Abstraction", abstractions, "id")
+            val abstractionId = abstractions.getJSONObject(selectedIndex).getString("id")
 
             val name = Messages.showInputDialog(
-              project, "What is the $serviceId name?",
-              "$serviceId Name", Messages.getQuestionIcon()
+                project, "What is the $abstractionId name?",
+                "$abstractionId Name", Messages.getQuestionIcon()
             )
-
+            if (name === null) {
+              throw Error("$abstractionId name is required")
+            }
+            LOG.warn("Got name: $name")
             val data = apiClient.getDataObject(
-              "service/create",
-              JSONObject(mapOf("name" to name, "clickedPath" to file.path, "entityId" to serviceId)),
+              "abstraction/create",
+              JSONObject(mapOf("entityId" to abstractionId, "name" to name, "dataStructureFile" to file.path)),
             )
-
-          Messages.showMessageDialog(
-            project,
-            data.getString("message"),
-            "Done",
-            Messages.getInformationIcon()
-          )
-        } catch (e: Error) {
-        Messages.showErrorDialog(project, e.message, "Error");
-      }
+            Messages.showMessageDialog(
+              project,
+              data.getString("message"),
+              "Done",
+              Messages.getInformationIcon()
+            )
+          } catch (e: Error) {
+            Messages.showErrorDialog(project, e.message, "Error")
+          }
         }
       }
     }

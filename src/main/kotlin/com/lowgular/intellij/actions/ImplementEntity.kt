@@ -15,7 +15,7 @@ import com.lowgular.intellij.infra.makeNodeCommand
 import com.lowgular.intellij.infra.ui.makeMultiOptionModal
 import java.util.*
 
-class ImplementDtoPort : DumbAwareAction() {
+class ImplementEntity : DumbAwareAction() {
 
     override fun actionPerformed(e: AnActionEvent) {
       val project = e.project ?: return
@@ -28,15 +28,15 @@ class ImplementDtoPort : DumbAwareAction() {
       application.executeOnPooledThread {
         application.invokeLater {
           try {
-            val ports = apiClient.getDataArray("entities/get", JSONObject().put("clickedPath", file.path).put("entityId", "dto-port"))
-            val selectedPortIndex = makeMultiOptionModal("Which dto port to implement?",  "Choose DTO Port", ports, "name")
-            val dtoPortFile = ports.getJSONObject(selectedPortIndex).getString("path")
+            val entities = apiClient.getDataArray("implementable/list", JSONObject().put("entityFilePath", file.path))
+            if (entities.length() == 0) {
+              throw Error("Did not find any entities in this library...")
+            }
+            val selectedIndex = makeMultiOptionModal("Which entity to inject?",  "Choose Entity", entities, "name")
+            val selectedItem = entities.getJSONObject(selectedIndex);
+            val selectedFilePath = selectedItem.getString("file")
 
-            val dtos = apiClient.getDataArray("entities/get", JSONObject().put("clickedPath", file.path).put("entityId", "dto"))
-            val selectedDtoIndex = makeMultiOptionModal( "What is the dto to use as Response Object?", "Choose Response Object", dtos, "name")
-            val dtoFile = dtos.getJSONObject(selectedDtoIndex).getString("path")
-
-            val data = apiClient.getDataObject("service/implement-port", JSONObject().put("serviceFile", file.path).put("dtoPortFile", dtoPortFile).put("responseObjectFile", dtoFile))
+            val data = apiClient.getDataObject("implementable/implement", JSONObject().put("entityFilePath", file.path).put("abstractionFilePath", selectedFilePath))
 
             Messages.showMessageDialog(
               project,
@@ -45,7 +45,7 @@ class ImplementDtoPort : DumbAwareAction() {
               Messages.getInformationIcon()
             )
           } catch (e: Error) {
-            Messages.showErrorDialog(project, e.message, "Error")
+            Messages.showErrorDialog(project, e.message, "Error $correlationId")
           }
         }
       }

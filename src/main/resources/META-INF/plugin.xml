@@ -42,16 +42,15 @@
       </action>
       <action class="com.lowgular.intellij.actions.CreateService" id="createService" text="Create Service" icon="/META-INF/lowgular.png">
       </action>
-      <action class="com.lowgular.intellij.actions.CreateSmartComponent" id="createSmartComponent" text="Create Smart Component" icon="/META-INF/lowgular.png">
+      <action class="com.lowgular.intellij.actions.CreateAbstraction" id="createAbstraction" text="Create Abstraction" icon="/META-INF/lowgular.png">
+      </action>
+      <action class="com.lowgular.intellij.actions.CreateAngular" id="createAngular" text="Create Angular" icon="/META-INF/lowgular.png">
       </action>
     </group>
-    <action class="com.lowgular.intellij.actions.CreateDtoPort" id="createDtoPort" text="Create DTO Port" icon="/META-INF/lowgular.png">
+    <action class="com.lowgular.intellij.actions.ImplementEntity" id="implementEntity" text="Implement Entity" icon="/META-INF/lowgular.png">
       <add-to-group group-id="EditorPopupMenu" anchor="last"/>
     </action>
-    <action class="com.lowgular.intellij.actions.ImplementDtoPort" id="implementDtoPort" text="Implement DTO Port" icon="/META-INF/lowgular.png">
-      <add-to-group group-id="EditorPopupMenu" anchor="last"/>
-    </action>
-    <action class="com.lowgular.intellij.actions.GetData" id="getData" text="Get Data" icon="/META-INF/lowgular.png">
+    <action class="com.lowgular.intellij.actions.InjectEntity" id="injectEntity" text="Inject Entity" icon="/META-INF/lowgular.png">
       <add-to-group group-id="EditorPopupMenu" anchor="last"/>
     </action>
   </actions>
