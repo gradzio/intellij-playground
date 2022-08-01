@@ -10,8 +10,8 @@ import org.codehaus.jettison.json.JSONObject
 
 class AuthService {
   val baseUrl = "https://us-central1-lowgular-extension.cloudfunctions.net"
+  val client = HttpClient(CIO)
   suspend fun createCredentials(email: String, password: String): JSONObject {
-    val client = HttpClient(CIO)
     val response: HttpResponse = client.post("${baseUrl}/auth/login") {
       contentType(ContentType.Application.Json)
       setBody(JSONObject().put("data", JSONObject().put("email", email).put("password", password)).toString())
@@ -23,15 +23,27 @@ class AuthService {
     return respJson.getJSONObject("data")
   }
 
+  suspend fun refreshToken(token: String): JSONObject {
+    val response: HttpResponse = client.post("${baseUrl}/auth/refresh") {
+      contentType(ContentType.Application.Json)
+      setBody(JSONObject().put("data", JSONObject().put("refreshToken", token)).toString())
+    }
+    if (!response.status.isSuccess()) {
+      throw Exception("Invalid refresh token")
+    }
+    val respJson = JSONObject(response.body() as String)
+    return respJson.getJSONObject("data")
+  }
+
   suspend fun validateToken(token: String) {
-    val client = HttpClient(CIO)
+
     val response: HttpResponse = client.get("${baseUrl}/auth/me") {
       contentType(ContentType.Application.Json)
       bearerAuth(token)
     }
     LOG.warn("Sent $token received $response.status.value")
     if (!response.status.isSuccess()) {
-      throw Exception("Invalid Credentials")
+      throw Exception("Invalid or expired access token")
     }
   }
 }

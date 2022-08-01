@@ -26,7 +26,7 @@ class CreateAbstraction : DumbAwareAction() {
           try {
             val abstractions = apiClient.getDataArray(
               "abstraction/list",
-              JSONObject(),
+              JSONObject(mapOf("clickedPath" to file.path)),
             )
             val selectedIndex = makeMultiOptionModal("Which abstraction to create?",  "Choose Abstraction", abstractions, "id")
             val abstractionId = abstractions.getJSONObject(selectedIndex).getString("id")

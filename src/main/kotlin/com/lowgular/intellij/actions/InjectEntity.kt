@@ -26,7 +26,7 @@ class InjectEntity : DumbAwareAction() {
           try {
             val entities = apiClient.getDataArray("injectable/list", JSONObject().put("entityFilePath", file.path))
             if (entities.length() == 0) {
-              throw Error("Did not find any entity in this library...")
+              throw Error("Did not find any suitable entity to implement in this library...")
             }
             val selectedServiceIndex = makeMultiOptionModal("Which entity to inject?",  "Choose Entity", entities, "name")
             val selectedItem = entities.getJSONObject(selectedServiceIndex);

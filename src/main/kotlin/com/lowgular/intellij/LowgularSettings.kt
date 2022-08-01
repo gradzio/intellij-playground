@@ -6,8 +6,9 @@ import com.intellij.openapi.components.Storage
 import com.intellij.openapi.project.Project
 
 class LowgularState {
-  var accessToken = "";
-  var userId = "";
+  var accessToken = ""
+  var refreshToken = ""
+  var userId = ""
 }
 
 @State(name = "LowgularSettings", storages = [Storage("lowgular.xml")])
@@ -30,6 +31,10 @@ class LowgularSettings(val project: Project) : PersistentStateComponent<Lowgular
 
   fun setAccessToken(token: String) {
     this.state.accessToken = token
+  }
+
+  fun setRefreshToken(token: String) {
+    this.state.refreshToken = token
   }
 
   fun setUserId(userId: String) {

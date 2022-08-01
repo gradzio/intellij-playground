@@ -26,7 +26,7 @@ class CreateAngular : DumbAwareAction() {
           try {
             val abstractions = apiClient.getDataArray(
               "angular/list",
-              JSONObject(),
+              JSONObject(mapOf("clickedPath" to file.path)),
             )
             val selectedIndex = makeMultiOptionModal("Which angular to create?",  "Choose Angular", abstractions, "id")
             val abstractionId = abstractions.getJSONObject(selectedIndex).getString("id")

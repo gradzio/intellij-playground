@@ -26,7 +26,7 @@ class CreateDataStructure : DumbAwareAction() {
           try {
             val dataStructures = apiClient.getDataArray(
               "data-structure/list",
-              JSONObject(),
+              JSONObject(mapOf("clickedPath" to file.path)),
             )
             val selectedDataStructureIndex = makeMultiOptionModal("Which data structure to create?",  "Choose DataStructure", dataStructures, "id")
             val dataStructure = dataStructures.getJSONObject(selectedDataStructureIndex)

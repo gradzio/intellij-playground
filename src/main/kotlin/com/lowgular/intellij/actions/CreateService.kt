@@ -26,7 +26,7 @@ class CreateService : DumbAwareAction() {
           try {
             val services = apiClient.getDataArray(
               "service/list",
-              JSONObject(),
+              JSONObject(mapOf("clickedPath" to file.path)),
             )
             val selectedServiceIndex = makeMultiOptionModal("Which service to create?",  "Choose Service", services, "id")
             val service = services.getJSONObject(selectedServiceIndex)

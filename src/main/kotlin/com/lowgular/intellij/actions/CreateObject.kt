@@ -26,7 +26,7 @@ class CreateObject : DumbAwareAction() {
           try {
             val objects = apiClient.getDataArray(
               "object/list",
-              JSONObject(),
+              JSONObject(mapOf("clickedPath" to file.path)),
             )
             val selectedObjectIndex = makeMultiOptionModal("Which object to create?",  "Choose Object", objects, "id")
             val objectId = objects.getJSONObject(selectedObjectIndex).getString("id")
