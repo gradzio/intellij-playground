@@ -14,7 +14,7 @@
        Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
        Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
   <description><![CDATA[
-    The playground plugin, alpha version ooonly
+    The playground plugin, alpha version only
   ]]></description>
 
   <!-- Product and plugin compatibility requirements.
@@ -45,6 +45,8 @@
       <action class="com.lowgular.intellij.actions.CreateAbstraction" id="createAbstraction" text="Create Abstraction" icon="/META-INF/lowgular.png">
       </action>
       <action class="com.lowgular.intellij.actions.CreateAngular" id="createAngular" text="Create Angular" icon="/META-INF/lowgular.png">
+      </action>
+      <action class="com.lowgular.intellij.actions.CreateLibrary" id="createLibrary" text="Create Library" icon="/META-INF/lowgular.png">
       </action>
     </group>
     <action class="com.lowgular.intellij.actions.ImplementEntity" id="implementEntity" text="Implement Entity" icon="/META-INF/lowgular.png">

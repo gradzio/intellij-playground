@@ -79,7 +79,6 @@ class Auth(val project: Project) {
         LOG.warn("Error when creating the credentials, ${e.message}")
         login()
       }
-
     }
   }
 }

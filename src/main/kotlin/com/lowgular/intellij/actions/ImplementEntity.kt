@@ -6,6 +6,7 @@ import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.ui.Messages
+import com.lowgular.intellij.application.Analytics
 import com.lowgular.intellij.application.ApiClient
 import com.lowgular.intellij.application.Auth
 import org.codehaus.jettison.json.JSONObject
@@ -23,6 +24,7 @@ class ImplementEntity : DumbAwareAction() {
       val userId = Auth(project).getUserId()
       val correlationId = UUID.randomUUID().toString()
       val apiClient = ApiClient(project, userId, correlationId)
+      val analytics = Analytics(project)
 
       val application = ApplicationManager.getApplication()
       application.executeOnPooledThread {
@@ -36,7 +38,8 @@ class ImplementEntity : DumbAwareAction() {
             val selectedItem = entities.getJSONObject(selectedIndex);
             val selectedFilePath = selectedItem.getString("file")
 
-            val data = apiClient.getDataObject("implementable/implement", JSONObject().put("entityFilePath", file.path).put("abstractionFilePath", selectedFilePath))
+            val payload = JSONObject().put("entityFilePath", file.path).put("abstractionFilePath", selectedFilePath)
+            val data = apiClient.getDataObject("implementable/implement", payload)
 
             Messages.showMessageDialog(
               project,
@@ -44,6 +47,7 @@ class ImplementEntity : DumbAwareAction() {
               "Done",
               Messages.getInformationIcon()
             )
+            analytics.trackExtension("ImplementableImplemented", payload)
           } catch (e: Error) {
             Messages.showErrorDialog(project, e.message, "Error $correlationId")
           }

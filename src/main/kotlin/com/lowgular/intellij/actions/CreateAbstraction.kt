@@ -5,6 +5,7 @@ import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.ui.Messages
+import com.lowgular.intellij.application.Analytics
 import com.lowgular.intellij.application.ApiClient
 import com.lowgular.intellij.application.Auth
 import org.codehaus.jettison.json.JSONObject
@@ -19,6 +20,7 @@ class CreateAbstraction : DumbAwareAction() {
       val userId = Auth(project).getUserId()
       val correlationId = UUID.randomUUID().toString()
       val apiClient = ApiClient(project, userId, correlationId)
+      val analytics = Analytics(project)
 
       val application = ApplicationManager.getApplication()
       application.executeOnPooledThread {
@@ -39,9 +41,10 @@ class CreateAbstraction : DumbAwareAction() {
               throw Error("$abstractionId name is required")
             }
             LOG.warn("Got name: $name")
+            val payload = JSONObject(mapOf("entityId" to abstractionId, "name" to name, "dataStructureFile" to file.path))
             val data = apiClient.getDataObject(
               "abstraction/create",
-              JSONObject(mapOf("entityId" to abstractionId, "name" to name, "dataStructureFile" to file.path)),
+              payload,
             )
             Messages.showMessageDialog(
               project,
@@ -49,6 +52,7 @@ class CreateAbstraction : DumbAwareAction() {
               "Done",
               Messages.getInformationIcon()
             )
+            analytics.trackExtension("AbstractionCreated", payload)
           } catch (e: Error) {
             Messages.showErrorDialog(project, e.message, "Error")
           }

@@ -23,24 +23,27 @@ fun makeNodeCommand(cliFilePath: String, action: String, params: JSONObject, use
 }
 
 fun grabCommandOutput(commandLine: GeneralCommandLine): JSONObject {
-  LOG.warn("Running command ${commandLine.toString()}")
-  val handler = CapturingProcessHandler(commandLine)
-  val output = handler.runProcess()
-  LOG.warn(output.toString())
-  if (output.exitCode == 0) {
+//  try {
+    LOG.warn("[grabCommandOutput] Running command ${commandLine.toString()}")
+    val handler = CapturingProcessHandler(commandLine)
+    val output = handler.runProcess()
+    LOG.warn("[grabCommandOutput] Raw output: $output")
+    if (output.exitCode == 0) {
+      val data = JSONTokener(output.stdout).nextValue() as JSONObject
+      LOG.warn("[grabCommandOutput] Output success: $data")
+      return data
+    }
     if (output.stderr.trim().isNotEmpty()) {
       val data = JSONTokener(output.stderr).nextValue() as JSONObject
       LOG.error(
-        "Command Error: ${data.getString("message")}\n"
+        "[grabCommandOutput] Output Error: $data\n"
           + shortenOutput(output.stderr),
         Attachment("err-output", output.stderr)
       )
       return data
     }
-    val data = JSONTokener(output.stdout).nextValue() as JSONObject
-    LOG.warn("Command success: ${data.getString("message")}")
-    return data
-  }
-
-  throw Exception("Invalid exit code")
+    throw Exception("Invalid exit code")
+//  } catch (e: Error) {
+//
+//  }
 }

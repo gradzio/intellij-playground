@@ -5,6 +5,7 @@ import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.ui.Messages
+import com.lowgular.intellij.application.Analytics
 import com.lowgular.intellij.application.ApiClient
 import com.lowgular.intellij.application.Auth
 import org.codehaus.jettison.json.JSONObject
@@ -20,6 +21,7 @@ class AddMethod : DumbAwareAction() {
       val userId = Auth(project).getUserId()
       val correlationId = UUID.randomUUID().toString()
       val apiClient = ApiClient(project, userId, correlationId)
+      val analytics = Analytics(project)
 
       val application = ApplicationManager.getApplication()
       application.executeOnPooledThread {
@@ -52,7 +54,7 @@ class AddMethod : DumbAwareAction() {
             }
 
             LOG.warn("Got params: ${csvData.toString()}")
-            if (methodTypeId === "read") {
+            if (methodTypeId == "read") {
               val returnType = Messages.showInputDialog(
                 project, "What is the method return type?",
                 "Method Return Type", Messages.getQuestionIcon()
@@ -61,6 +63,7 @@ class AddMethod : DumbAwareAction() {
                 throw Error("Method return type for read method is required")
               }
               LOG.warn("Got returnType: $returnType")
+              val payload = JSONObject(mapOf("entityFilePath" to file.path, "name" to name, "params" to csvData, "returnType" to returnType))
               val data = apiClient.getDataObject(
                 "method-signature/add-read",
                 JSONObject(mapOf("entityFilePath" to file.path, "name" to name, "params" to csvData, "returnType" to returnType)),
@@ -71,8 +74,11 @@ class AddMethod : DumbAwareAction() {
                 "Done",
                 Messages.getInformationIcon()
               )
+
+              analytics.trackExtension("ReadMethodAdded", payload)
             }
-            else if (methodTypeId === "write") {
+            else if (methodTypeId == "write") {
+              val payload = JSONObject(mapOf("entityFilePath" to file.path, "name" to name, "params" to csvData))
               val data = apiClient.getDataObject(
                 "method-signature/add-write",
                 JSONObject(mapOf("entityFilePath" to file.path, "name" to name, "params" to csvData)),
@@ -83,10 +89,11 @@ class AddMethod : DumbAwareAction() {
                 "Done",
                 Messages.getInformationIcon()
               )
+
+              analytics.trackExtension("WriteMethodAdded", payload)
+            } else {
+              throw Error("Unsupported method type: $methodTypeId");
             }
-
-            throw Error("Unsupported method type: $methodTypeId");
-
           } catch (e: Error) {
             Messages.showErrorDialog(project, e.message, "Error")
           }

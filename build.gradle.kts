@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.lowgular.intellij.plugin"
-version = "0.1-SNAPSHOT"
+version = "0.3.0-SNAPSHOT"
 val ktorVersion = "2.0.3"
 
 dependencies {

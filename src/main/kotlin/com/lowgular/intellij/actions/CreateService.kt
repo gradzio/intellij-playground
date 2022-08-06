@@ -5,6 +5,7 @@ import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.ui.Messages
+import com.lowgular.intellij.application.Analytics
 import com.lowgular.intellij.application.ApiClient
 import com.lowgular.intellij.application.Auth
 import org.codehaus.jettison.json.JSONObject
@@ -19,6 +20,7 @@ class CreateService : DumbAwareAction() {
       val userId = Auth(project).getUserId()
       val correlationId = UUID.randomUUID().toString()
       val apiClient = ApiClient(project, userId, correlationId)
+      val analytics = Analytics(project)
 
       val application = ApplicationManager.getApplication()
       application.executeOnPooledThread {
@@ -36,10 +38,10 @@ class CreateService : DumbAwareAction() {
               project, "What is the $serviceId name?",
               "$serviceId Name", Messages.getQuestionIcon()
             )
-
+            val payload = JSONObject(mapOf("name" to name, "clickedPath" to file.path, "entityId" to serviceId))
             val data = apiClient.getDataObject(
               "service/create",
-              JSONObject(mapOf("name" to name, "clickedPath" to file.path, "entityId" to serviceId)),
+              payload,
             )
 
           Messages.showMessageDialog(
@@ -48,6 +50,7 @@ class CreateService : DumbAwareAction() {
             "Done",
             Messages.getInformationIcon()
           )
+            analytics.trackExtension("ServiceCreated", payload)
         } catch (e: Error) {
         Messages.showErrorDialog(project, e.message, "Error");
       }
