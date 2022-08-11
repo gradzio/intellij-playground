@@ -1,0 +1,52 @@
+package com.lowgular.intellij.coroutines
+
+import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.application.ModalityState
+import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.Job
+import java.util.concurrent.atomic.AtomicReference
+
+@OptIn(InternalCoroutinesApi::class)
+internal class DispatchedRunnable(job: Job, runnable: Runnable) : Runnable {
+
+  private val runnableRef: AtomicReference<Runnable> = AtomicReference(runnable)
+
+  init {
+    job.invokeOnCompletion(onCancelling = true) { cause ->
+      if (cause != null) {
+        handleCancellation()
+      }
+      else {
+        // Sanity check: completed means the `run` was executed => the reference must be cleared.
+        check(runnableRef.get() == null)
+      }
+    }
+  }
+
+  override fun run() {
+    // Clear the reference to avoid scheduling the runnable again when cancelled.
+    val runnable = runnableRef.getAndSet(null)
+    if (runnable == null) {
+      // Cleared in `handleCancellation`.
+      // This code path means that the coroutine was cancelled externally after being scheduled.
+    }
+    else {
+      runnable.run()
+    }
+  }
+
+  private fun handleCancellation() {
+    // Clear the reference so this runnable does nothing in `run`.
+    val runnable = runnableRef.getAndSet(null)
+    if (runnable == null) {
+      // Cleared in `run`.
+      // This code path means that the cancellation happened concurrently with `run`,
+      // or that the coroutine threw CancellationException manually.
+    }
+    else {
+      // Reschedule the original runnable ignoring the modality state
+      // to give the cancelled coroutine a chance to clean its resources and complete.
+      ApplicationManager.getApplication().invokeLater(runnable, ModalityState.any())
+    }
+  }
+}

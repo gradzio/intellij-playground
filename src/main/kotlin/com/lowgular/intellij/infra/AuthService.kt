@@ -9,8 +9,9 @@ import io.ktor.http.*
 import org.codehaus.jettison.json.JSONObject
 
 class AuthService {
-  val baseUrl = "https://us-central1-lowgular-extension.cloudfunctions.net"
-  val client = HttpClient(CIO)
+  private val baseUrl = "https://us-central1-lowgular-extension.cloudfunctions.net"
+  private val client = HttpClient(CIO)
+
   suspend fun createCredentials(email: String, password: String): JSONObject {
     val response: HttpResponse = client.post("${baseUrl}/auth/login") {
       contentType(ContentType.Application.Json)
@@ -23,7 +24,7 @@ class AuthService {
     return respJson.getJSONObject("data")
   }
 
-  suspend fun refreshToken(token: String): JSONObject {
+    suspend fun refreshToken(token: String): JSONObject {
     val response: HttpResponse = client.post("${baseUrl}/auth/refresh") {
       contentType(ContentType.Application.Json)
       setBody(JSONObject().put("data", JSONObject().put("refreshToken", token)).toString())

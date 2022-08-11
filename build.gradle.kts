@@ -9,8 +9,12 @@ version = "0.3.0-SNAPSHOT"
 val ktorVersion = "2.0.3"
 
 dependencies {
-  implementation("io.ktor:ktor-client-core:$ktorVersion")
-  implementation("io.ktor:ktor-client-cio:$ktorVersion")
+    implementation("io.ktor:ktor-client-core:1.$ktorVersion") {
+        exclude(group = "org.jetbrains.kotlin")
+    }
+    implementation("io.ktor:ktor-client-cio:$ktorVersion") {
+        exclude(group = "org.jetbrains.kotlin")
+    }
 }
 
 repositories {
@@ -47,13 +51,14 @@ tasks {
         from(sourceSets.named("unpacked").get().allSource) {
             into("")
         }
-      duplicatesStrategy = DuplicatesStrategy.INCLUDE
+        duplicatesStrategy = DuplicatesStrategy.INCLUDE
     }
 
     prepareSandbox {
         from(sourceSets.named("unpacked").get().allSource) {
             into(pluginName.get())
         }
+
     }
 
     patchPluginXml {
